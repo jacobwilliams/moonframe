@@ -21,7 +21,7 @@ To run the tests:
 fpm test --profile release --flag "-D HAS_SPICELIB" --link-flag "./toolkit/lib/spicelib.a"
 ```
 
-The use the library, SPICELIB is not required. It can be imported like any normaal FPM library like so:
+The use the library, SPICELIB is not required. It can be imported like any normal FPM library like so:
 
 ```toml
 [dependencies]
