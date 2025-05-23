@@ -114,42 +114,6 @@
         end if
     end function unit
 
-
-    subroutine test_cases()
-
-    DOUBLE PRECISION :: AXIS1   (    3 ), axis2(3)
-    DOUBLE PRECISION :: ANGLE1, angle2
-    INTEGER           ::  INFRM
-    DOUBLE PRECISION  ::  ET
-    DOUBLE PRECISION  ::  ROTATE ( 3, 3 )
-    INTEGER           ::  OUTFRM
-    integer :: frame1, frame2, frame3
-
-    et = 100.0
-
-    CALL NAMFRM ( 'J2000', frame1 );  write(*,*) 'J2000 frame id:  ', frame1
-    ! why doesn't this work? arm bug?
-    ! CALL NAMFRM ( 'MOON_PA', frame2); write(*,*) 'MOON_PA frame id:', frame2
-    frame2 = 31000  ! just set it manually
-    write(*,*) 'MOON_PA frame id:', frame2
-
-    CALL NAMFRM ( 'IAU_MOON', frame3 );  write(*,*) 'IAU_MOON frame id:  ', frame3
-
-    call REFCHG ( FRAME1, FRAME2, ET, ROTATE )
-    call RAXISA ( ROTATE, AXIS1, ANGLE1 )
-    write(*,*) 'MOON_PA Axis: ', AXIS1
-    write(*,*) 'MOON_PA Angle:', ANGLE1
-
-    call REFCHG ( FRAME1, FRAME3, ET, ROTATE )
-    call RAXISA ( ROTATE, AXIS2, ANGLE2 )
-    write(*,*) 'IAU_MOON Axis: ', AXIS2
-    write(*,*) 'IAU_MOON Angle:', ANGLE2
-
-    write(*,*) 'IAU_MOON - MOON_PA Axis: ', angle2 - angle1
-    write(*,*) 'IAU_MOON - MOON_PA Angle: ', axis2 - axis1
-
-    end subroutine test_cases
-
 #else
     error stop 'Error: SPICE not available.'
 #endif

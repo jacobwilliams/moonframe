@@ -20,13 +20,6 @@ module moon_frame_spice_interface
 
     ! from spicelib:
     interface
-        subroutine raxisa ( matrix, axis, angle )
-            import
-            implicit none
-            real(wp) :: matrix ( 3, 3 )
-            real(wp) :: axis   (    3 )
-            real(wp) :: angle
-        end subroutine raxisa
         subroutine refchg ( frame1, frame2, et, rotate )
             import
             implicit none
@@ -40,42 +33,6 @@ module moon_frame_spice_interface
             implicit none
             character(len=*) :: file
         end subroutine furnsh
-        subroutine namfrm ( frname, frcode )
-            import
-            implicit none
-            character(len=*) :: frname
-            integer :: frcode
-        end subroutine namfrm
-        subroutine recsph ( rectan, r, colat, slon  )
-            import
-            implicit none
-            real(wp) :: rectan ( 3 )
-            real(wp) :: r
-            real(wp) :: colat
-            real(wp) :: slon
-        end subroutine recsph
-        subroutine m2eul (  r,  axis3,   axis2,   axis1, angle3,  angle2,  angle1  )
-            import
-            implicit none
-            real(wp) :: r( 3, 3 )
-            integer :: axis3
-            integer :: axis2
-            integer :: axis1
-            real(wp) :: angle3
-            real(wp) :: angle2
-            real(wp) :: angle1
-        end subroutine m2eul
-        subroutine eul2m (  angle3,   angle2,   angle1, axis3,    axis2,    axis1,   r  )
-            import
-            implicit none
-            real(wp) :: angle3
-            real(wp) :: angle2
-            real(wp) :: angle1
-            integer :: axis3
-            integer :: axis2
-            integer :: axis1
-            real(wp) :: r ( 3, 3 )
-        end subroutine eul2m
         subroutine str2et ( timstr, et )
             import
             implicit none
@@ -83,7 +40,7 @@ module moon_frame_spice_interface
             real(wp) :: et
         end subroutine str2et
     end interface
-    public :: raxisa, refchg, furnsh, namfrm, recsph, m2eul, eul2m, str2et
+    public :: refchg, furnsh, str2et
     public :: from_j2000_to_iau_moon, from_j2000_to_moon_me, from_j2000_to_moon_pa
 
     contains

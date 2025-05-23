@@ -114,7 +114,6 @@ contains
         yaw = atan2(yaw_y, yaw_x)
 
         ! convert to rotation matrix:
-        !call eul2m(roll*deg2rad, pitch*deg2rad, yaw, 1, 2, 3, rot) ! test
         call rpy_to_rot(roll, pitch, yaw, rot)
 
     end subroutine j2000_to_frame

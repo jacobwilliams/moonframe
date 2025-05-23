@@ -61,7 +61,6 @@ program generate
         et = et0
         do
             call func(et, rot)
-            !call m2eul(rot, 1, 2, 3, roll, pitch, yaw) ! test
             call rot_to_rpy(rot, roll, pitch, yaw)
             write(iunit,'(F15.1, 3(",",E27.17))') et, roll,  pitch,  yaw
             et = et + dt
