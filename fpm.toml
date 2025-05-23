@@ -12,7 +12,7 @@ auto-tests = true
 
 [dependencies]
 bspline-fortran = { git = "https://github.com/jacobwilliams/bspline-fortran", tag = "7.0.0" }
-csv-fortran = { git = "https://github.com/jacobwilliams/csv-fortran", tag = "2.2.0" }
+csv-fortran = { git = "https://github.com/jacobwilliams/csv-fortran", tag = "3.0.0" }
 
 [library]
 source-dir = "src"

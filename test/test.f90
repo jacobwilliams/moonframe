@@ -5,8 +5,8 @@
 
     program test
 
-    use moon_frame_module
-    use iso_fortran_env, only: wp => real64
+    use moon_frame_module, wp => moon_frame_wp
+    use iso_fortran_env
     use moon_frame_spice_interface
 
 #ifdef HAS_SPICELIB
@@ -14,11 +14,12 @@
     implicit none
 
     type(moon_frame_interpolater) :: moon_pa
-    real(wp),dimension(3,3) :: rot, rot_true
+    real(wp),dimension(3,3) :: rot
     real(wp),dimension(3,1) :: r
     real(wp) :: et
     real(wp) :: max_r_error, r_error
     real(wp) :: tstart, tend
+    real(real64),dimension(3,3) :: rot_true
 
     ! load the kernels:
     call furnsh ( './kernels/moon_de440_250416.tf' )
@@ -32,14 +33,14 @@
 
     et = 0.0_wp
     call moon_pa%j2000_to_frame(et, rot)
-    call from_j2000_to_moon_pa(et, rot_true)
+    call from_j2000_to_moon_pa(real(et, real64), rot_true)
     write(*,*) ''
     write(*,*) 'rot error at et=0', rot_true - rot
     write(*,*) 'pos error: ', norm2(matmul(rot_true, r) - matmul(rot, r))
 
     et = 21600.0_wp ! halfway between first two points
     call moon_pa%j2000_to_frame(et, rot)
-    call from_j2000_to_moon_pa(et, rot_true)
+    call from_j2000_to_moon_pa(real(et, real64), rot_true)
     write(*,*) ''
     write(*,*) 'rot error at et=21600', rot_true - rot
     write(*,*) 'pos error: ', norm2(matmul(rot_true, r) - matmul(rot, r))
@@ -49,7 +50,7 @@
 
     et = (129600.0_wp + 86400.0_wp) / 2.0_wp
     call moon_pa%j2000_to_frame(et, rot)
-    call from_j2000_to_moon_pa(et, rot_true)
+    call from_j2000_to_moon_pa(real(et, real64), rot_true)
     write(*,*) ''
     write(*,*) 'rot error at et', rot_true - rot
     write(*,*) 'pos error: ', norm2(matmul(rot_true, r) - matmul(rot, r))
@@ -66,7 +67,7 @@
         et = et + 6.0_wp *3600.0_wp
         if (et > 3187296000.0_wp) exit
         call moon_pa%j2000_to_frame(et, rot)          ! splined version
-        call from_j2000_to_moon_pa(et, rot_true)      ! true version from spice : max error: 5.5664815594496319E-004 km
+        call from_j2000_to_moon_pa(real(et, real64), rot_true)      ! true version from spice : max error: 5.5664815594496319E-004 km
         ! call from_j2000_to_iau_moon(et, rot_true)   ! compare to iau_moon :     max error: 0.98148100150030848 km
         r_error = norm2(matmul(rot_true, r) - matmul(rot, r))
         if (r_error > max_r_error) max_r_error = r_error
@@ -84,7 +85,7 @@
     do
         et = et + 6.0_wp *3600.0_wp
         if (et > 3187296000.0_wp) exit
-        call from_j2000_to_moon_pa(et, rot_true)
+        call from_j2000_to_moon_pa(real(et, real64), rot_true)
     end do
     call cpu_time(tend)
     write(*,'(A,F6.3,A)') 'spice time:  ', (tend-tstart), 'sec'
