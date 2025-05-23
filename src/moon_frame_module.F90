@@ -40,19 +40,23 @@ module moon_frame_module
 
 contains
 
-    subroutine initialize_moon_frame_interpolater(me, filename, k, extrapolate)
+    subroutine initialize_moon_frame_interpolater(me, filename, k, extrapolate, et0, etf)
         !! initialize the moon frame interpolater with the given csv file.
 
         class(moon_frame_interpolater),intent(inout) :: me
         character(len=*),intent(in) :: filename !! csv file with roll, pitch, and yaw angles vs ephemeris time. (see `generate_csv_file`)
         integer,intent(in),optional :: k !! spline order (`kx` in bspline_module). If not given, use the default quartic order.
         logical,intent(in),optional :: extrapolate !! if true, extrapolate the spline outside the range of the data. Default is false.
+        real(wp),intent(in),optional :: et0 !! start ephemeris time [if not present, the initial time in the file is used]
+        real(wp),intent(in),optional :: etf !! end ephemeris time [if not present, the final time in the file is used]
 
         logical :: status_ok
         type(csv_file) :: f
         real(wp),dimension(:),allocatable :: et, roll, pitch, yaw, yaw_x, yaw_y
-        integer :: iflag, i, kx
+        integer :: iflag, i, kx, n
         logical :: extrap !! extrapolate flag
+        integer :: istart  !! first index to use
+        integer :: iend  !! last index to use
 
         ! optional arguments:
         if (present(k)) then
@@ -77,22 +81,42 @@ contains
         call f%get(4,yaw,  status_ok); if (.not. status_ok) error stop 'error getting yaw from file: '//trim(filename)
         call f%destroy()
 
+        ! data to use:
+        n = size(et) ! number of rows in the file
+        istart = 1 ! by default, use all the data
+        iend = n
+        if (present(et0)) then
+            istart = minloc(abs(et-et0), 1)
+            if (et(istart) > et0) istart = max(1, istart - 1)
+        end if
+        if (present(etf)) then
+            iend = minloc(abs(et-etf), 1)
+            if (et(iend) < etf) iend = min(n, iend + 1)
+        end if
+        if (et(iend)<et(istart)) error stop 'Error: end time is before start time'
+
         ! for the moon frames, roll and pitch have no discontinuities,
         ! so they can be splined normally. Yaw will go from 0 to 2pi,
         ! so we need to convert the angle to its vector components and spline those,
         ! and then convert back to angle when we need it.
-        allocate(yaw_x(size(yaw)))
-        allocate(yaw_y(size(yaw)))
-        do i = 1, size(yaw)
+        allocate(yaw_x(n))
+        allocate(yaw_y(n))
+        do i = istart, iend
             yaw_x(i) = cos(yaw(i))
             yaw_y(i) = sin(yaw(i))
         end do
 
         ! initialize the splines:
-        call me%roll_spline%initialize (et, roll, kx,  iflag, extrap=extrap); if (iflag/=0) error stop 'error initializing roll spline: '//trim(filename)
-        call me%pitch_spline%initialize(et, pitch, kx, iflag, extrap=extrap); if (iflag/=0) error stop 'error initializing pitch spline: '//trim(filename)
-        call me%yaw_x_spline%initialize(et, yaw_x, kx, iflag, extrap=extrap); if (iflag/=0) error stop 'error initializing yaw_x spline: '//trim(filename)
-        call me%yaw_y_spline%initialize(et, yaw_y, kx, iflag, extrap=extrap); if (iflag/=0) error stop 'error initializing yaw_y spline: '//trim(filename)
+        call me%roll_spline%initialize (et(istart:iend), roll(istart:iend), kx,  iflag, extrap=extrap)
+        if (iflag/=0) error stop 'error initializing roll spline: '//trim(filename)
+        call me%pitch_spline%initialize(et(istart:iend), pitch(istart:iend), kx, iflag, extrap=extrap)
+        if (iflag/=0) error stop 'error initializing pitch spline: '//trim(filename)
+        call me%yaw_x_spline%initialize(et(istart:iend), yaw_x(istart:iend), kx, iflag, extrap=extrap)
+        if (iflag/=0) error stop 'error initializing yaw_x spline: '//trim(filename)
+        call me%yaw_y_spline%initialize(et(istart:iend), yaw_y(istart:iend), kx, iflag, extrap=extrap)
+        if (iflag/=0) error stop 'error initializing yaw_y spline: '//trim(filename)
+
+        deallocate(et, roll, pitch, yaw, yaw_x, yaw_y)
 
     end subroutine initialize_moon_frame_interpolater
 

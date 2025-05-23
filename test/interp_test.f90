@@ -8,7 +8,7 @@ program interp_test
     real(wp) :: et !! ephemeris time (sec)
     integer :: i !! counter
 
-    call moon_pa%initialize('data/moon_pa_2000_2100.csv')
+    call moon_pa%initialize('data/moon_pa_2000_2100.csv', et0 = -1.0_wp, etf = 400000.0_wp)
 
     et = 0.0_wp
     rot = moon_pa%j2000_to_frame(et)
