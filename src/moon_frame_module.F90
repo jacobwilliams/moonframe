@@ -5,6 +5,7 @@
 module moon_frame_module
     use bspline_module
     use iso_fortran_env
+    use csv_module
 
     implicit none
 
@@ -42,10 +43,8 @@ contains
     subroutine initialize_moon_frame_interpolater(me, filename, k, extrapolate)
         !! initialize the moon frame interpolater with the given csv file.
 
-        use csv_module
-
         class(moon_frame_interpolater),intent(inout) :: me
-        character(len=*),intent(in) :: filename !! csv file with roll, pitch, and yaw angles vs ephemeris time. (see [[generate_csv_file]])
+        character(len=*),intent(in) :: filename !! csv file with roll, pitch, and yaw angles vs ephemeris time. (see `generate_csv_file`)
         integer,intent(in),optional :: k !! spline order (`kx` in bspline_module). If not given, use the default quartic order.
         logical,intent(in),optional :: extrapolate !! if true, extrapolate the spline outside the range of the data. Default is false.
 
