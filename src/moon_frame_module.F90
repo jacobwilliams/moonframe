@@ -34,6 +34,7 @@ module moon_frame_module
         procedure,public :: initialize => initialize_moon_frame_interpolater
         procedure,public :: destroy    => destroy_moon_frame_interpolater
         procedure,public :: j2000_to_frame
+        procedure,public :: frame_to_j2000
     end type moon_frame_interpolater
 
 contains
@@ -96,10 +97,11 @@ contains
 
     end subroutine initialize_moon_frame_interpolater
 
-    subroutine j2000_to_frame(me, et, rot)
+    function j2000_to_frame(me, et) result(rot)
+        !! rotation matrix from J2000 to the frame
         class(moon_frame_interpolater), intent(inout) :: me
         real(wp), intent(in) :: et
-        real(wp), intent(out) :: rot(3, 3)
+        real(wp) :: rot(3, 3)
 
         real(wp) :: roll, pitch, yaw_x, yaw_y, yaw
         integer :: iflag
@@ -113,7 +115,15 @@ contains
         ! convert to rotation matrix:
         call rpy_to_rot(roll, pitch, yaw, rot)
 
-    end subroutine j2000_to_frame
+    end function j2000_to_frame
+
+    function frame_to_j2000(me, et) result(rot)
+        !! rotation matrix from the frame to j2000
+        class(moon_frame_interpolater), intent(inout) :: me
+        real(wp), intent(in) :: et
+        real(wp) :: rot(3, 3)
+        rot = transpose(me%j2000_to_frame(et))
+    end function frame_to_j2000
 
     pure subroutine rpy_to_rot(roll, pitch, yaw, r)
         !! roll, patch, yaw to rotation matrix

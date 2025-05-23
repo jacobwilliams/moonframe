@@ -11,7 +11,7 @@ program interp_test
     call moon_pa%initialize('data/moon_pa_2000_2100.csv')
 
     et = 0.0_wp
-    call moon_pa%j2000_to_frame(et, rot)
+    rot = moon_pa%j2000_to_frame(et)
 
     write(*,*) ''
     write(*,*) 'rot at et=0.0:'
