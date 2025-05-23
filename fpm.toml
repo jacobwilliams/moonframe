@@ -1,0 +1,24 @@
+name = "moonframe"
+author = "Jacob Williams"
+license = "BSD-3"
+description = "Moon frame test"
+homepage = "https://github.com/jacobwilliams/moonframe"
+keywords = ["orbital mechanics", "moon"]
+
+[build]
+auto-executables = true
+auto-examples = true
+auto-tests = true
+
+[dependencies]
+bspline-fortran = { git = "https://github.com/jacobwilliams/bspline-fortran", tag = "7.0.0" }
+csv-fortran = { git = "https://github.com/jacobwilliams/csv-fortran", tag = "2.2.0" }
+
+[library]
+source-dir = "src"
+
+[install]
+library = true
+
+[preprocess]
+[preprocess.cpp]
