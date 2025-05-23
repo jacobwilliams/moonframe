@@ -16,6 +16,8 @@ module moon_frame_spice_interface
     integer,parameter,public :: moon_me_id = 31001 !! from the kernel
     integer,parameter,public :: moon_pa_id = 31000 !! from the kernel
 
+#ifdef HAS_SPICELIB
+
     ! from spicelib:
     interface
         subroutine raxisa ( matrix, axis, angle )
@@ -103,5 +105,7 @@ module moon_frame_spice_interface
         real(wp), intent(out) :: rot(3, 3)
         call refchg ( j2000_id, iau_moon_id, et, rot )
     end subroutine from_j2000_to_iau_moon
+
+#endif
 
 end module moon_frame_spice_interface
