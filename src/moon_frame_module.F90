@@ -21,9 +21,6 @@ module moon_frame_module
 #endif
     integer,parameter,public :: moon_frame_wp = wp  !! working precision for moon frame
 
-    real(wp),parameter :: rad2deg = 180.0_wp / acos(-1.0_wp)
-    real(wp),parameter :: deg2rad = 1.0_wp / rad2deg
-
     type,public :: moon_frame_interpolater
         !! Main class to read a pre-computed CSV file with roll, pitch, and yaw angles
         !! and interpolate the angles to get the rotation matrix for a given ephemeris time.
