@@ -9,7 +9,7 @@ A Fortran library to interpolate the MOON_PA reference frame without using SPICE
 
 ### Description
 
-The `MOON_PA` reference frame is a high-accuracy Moon body-fixed frame. This library provides a means to use this frame without having to load SPICE kernels. This is done by splining a table of precomputed roll, pitch, and yaw values. These values are used to compute the rotating matrix from J2000 to the frame. This package also provides the code for generating these tables using SPICELIB.
+The `MOON_PA` reference frame is a high-accuracy Moon body-fixed frame. This library provides a means to use this frame without having to load SPICE kernels. This is done by splining a table of precomputed roll, pitch, and yaw values. These values are used to compute the rotation matrix from J2000 to the frame. This package also provides the code for generating these tables using SPICELIB.
 
 ### Usage
 
